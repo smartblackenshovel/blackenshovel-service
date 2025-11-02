@@ -14,6 +14,9 @@ func SetupRouter() http.Handler {
 	// Organizations routes
 	r.Get("/organizations", controllers.GetOrganizations)
 	r.Post("/organizations", controllers.CreateOrganization)
+	r.Get("/organizations/{id}", controllers.GetOrganizationByID)
+	r.Patch("/organizations/{id}", controllers.UpdateOrganization)
+	r.Delete("/organizations/{id}", controllers.DeleteOrganization)
 
 	// Example: placeholder for future routes
 	// r.Get("/organizations/{id}", controllers.GetOrganizationByID)
