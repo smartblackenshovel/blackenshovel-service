@@ -18,9 +18,6 @@ func GetAllUsers(filters map[string]interface{}) ([]models.User, error) {
 	if roleID, ok := filters["role_id"].(uuid.UUID); ok {
 		query = query.Where("role_id = ?", roleID)
 	}
-	if email, ok := filters["email"].(string); ok {
-		query = query.Where("email = ?", email)
-	}
 
 	result := query.Find(&users)
 	return users, result.Error
