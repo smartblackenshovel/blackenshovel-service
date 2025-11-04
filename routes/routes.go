@@ -31,5 +31,19 @@ func SetupRouter() http.Handler {
 	r.Get("/shovel_logs/{id}", controllers.GetShovelLogByID)
 	r.Delete("/shovel_logs/{id}", controllers.DeleteShovelLog)
 
+	// User routes
+	r.Get("/users", controllers.GetUsers)
+	r.Post("/users", controllers.CreateUser)
+	r.Get("/users/{id}", controllers.GetUserByID)
+	r.Patch("/users/{id}", controllers.UpdateUser)
+	r.Delete("/users/{id}", controllers.DeleteUser)
+
+	// Role routes
+	r.Get("/roles", controllers.GetRoles)
+	r.Post("/roles", controllers.CreateRole)
+	r.Get("/roles/{id}", controllers.GetRoleByID)
+	r.Patch("/roles/{id}", controllers.UpdateRole)
+	r.Delete("/roles/{id}", controllers.DeleteRole)
+
 	return r
 }
