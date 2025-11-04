@@ -45,5 +45,12 @@ func SetupRouter() http.Handler {
 	r.Patch("/roles/{id}", controllers.UpdateRole)
 	r.Delete("/roles/{id}", controllers.DeleteRole)
 
+	// Spot routes
+	r.Get("/spots", controllers.GetSpots)
+	r.Post("/spots", controllers.CreateSpot)
+	r.Get("/spots/{id}", controllers.GetSpotByID)
+	r.Patch("/spots/{id}", controllers.UpdateSpot)
+	r.Delete("/spots/{id}", controllers.DeleteSpot)
+
 	return r
 }
