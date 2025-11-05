@@ -52,5 +52,12 @@ func SetupRouter() http.Handler {
 	r.Patch("/spots/{id}", controllers.UpdateSpot)
 	r.Delete("/spots/{id}", controllers.DeleteSpot)
 
+	// Session routes
+	r.Get("/sessions", controllers.GetSessions)
+	r.Post("/sessions", controllers.CreateSession)
+	r.Get("/sessions/{id}", controllers.GetSessionByID)
+	r.Patch("/sessions/{id}", controllers.UpdateSession)
+	r.Delete("/sessions/{id}", controllers.DeleteSession)
+
 	return r
 }
