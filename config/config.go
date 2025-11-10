@@ -6,7 +6,7 @@ import (
 )
 
 type Config struct {
-	DBHost, DBPort, DBUser, DBPassword, DBName string
+	DBHost, DBPort, DBUser, DBPassword, DBName, MapboxToken string
 }
 
 var AppConfig Config
@@ -18,6 +18,7 @@ func Load() {
 	AppConfig.DBUser = getEnv("DB_USER", "admin")
 	AppConfig.DBPassword = getEnv("DB_PASSWORD", "admin")
 	AppConfig.DBName = getEnv("DB_NAME", "blackenshovel")
+	AppConfig.MapboxToken = getEnv("MAPBOX_ACCESS_TOKEN", "")
 
 	log.Println("Configuration loaded")
 }

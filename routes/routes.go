@@ -71,5 +71,8 @@ func SetupRouter() http.Handler {
 	r.Get("/spot_logs/{id}", controllers.GetSpotLogByID)
 	r.Delete("/spot_logs/{id}", controllers.DeleteSpotLog)
 
+	// Map routes
+	r.Get("/map", controllers.GetStaticMapHandler)
+
 	return r
 }
