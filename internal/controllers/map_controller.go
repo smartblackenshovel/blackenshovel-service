@@ -2,7 +2,12 @@ package controllers
 
 import (
 	"blackenshovel-service/config"
+	"bytes"
 	"fmt"
+	"image"
+	"image/draw"
+	_ "image/jpeg"
+	_ "image/png"
 	"io"
 	"net/http"
 )
@@ -19,7 +24,7 @@ func GetStaticMapHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	const (
-		zoom    = 17.5
+		zoom    = 18.5
 		bearing = 0
 		width   = 320
 		height  = 240
@@ -38,10 +43,47 @@ func GetStaticMapHandler(w http.ResponseWriter, r *http.Request) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		http.Error(w, fmt.Sprintf("Mapbox returned status %d", resp.StatusCode), resp.StatusCode)
+		body, _ := io.ReadAll(resp.Body)
+		http.Error(w, fmt.Sprintf("Mapbox returned status %d: %s", resp.StatusCode, string(body)), resp.StatusCode)
 		return
 	}
 
-	w.Header().Set("Content-Type", "image/png")
-	io.Copy(w, resp.Body)
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		http.Error(w, "Failed to read body", http.StatusInternalServerError)
+		return
+	}
+
+	// Decode image (supports PNG or JPEG)
+	srcImg, _, err := image.Decode(bytes.NewReader(body))
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Failed to decode image: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	// Convert to RGBA for consistent RGB access
+	bounds := srcImg.Bounds()
+	rgbaImg := image.NewRGBA(bounds)
+	draw.Draw(rgbaImg, bounds, srcImg, bounds.Min, draw.Src)
+
+	// Convert to RGB565
+	rgb565 := make([]byte, bounds.Dx()*bounds.Dy()*2)
+	i := 0
+	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
+		for x := bounds.Min.X; x < bounds.Max.X; x++ {
+			c := rgbaImg.RGBAAt(x, y)
+			r := uint16(c.R) >> 3
+			g := uint16(c.G) >> 2
+			b := uint16(c.B) >> 3
+			val := (r << 11) | (g << 5) | b
+			rgb565[i] = byte(val >> 8)
+			rgb565[i+1] = byte(val & 0xFF)
+			i += 2
+		}
+	}
+
+	w.Header().Set("Content-Type", "application/octet-stream")
+	w.Header().Set("X-Image-Width", fmt.Sprint(bounds.Dx()))
+	w.Header().Set("X-Image-Height", fmt.Sprint(bounds.Dy()))
+	w.Write(rgb565)
 }
