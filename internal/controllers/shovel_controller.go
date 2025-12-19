@@ -25,7 +25,12 @@ func GetShovels(w http.ResponseWriter, r *http.Request) {
 		orgID = &parsedID
 	}
 
-	shovels, err := repository.GetAllShovels(orgID)
+	var serialNumber *string
+	if sn := r.URL.Query().Get("serial_number"); sn != "" {
+		serialNumber = &sn
+	}
+
+	shovels, err := repository.GetAllShovels(orgID, serialNumber)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

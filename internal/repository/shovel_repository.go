@@ -16,12 +16,17 @@ func CreateShovel(shovel *models.Shovel) error {
 	return result.Error
 }
 
-func GetAllShovels(organizationID *uuid.UUID) ([]models.Shovel, error) {
+func GetAllShovels(organizationID *uuid.UUID, serialNumber *string) ([]models.Shovel, error) {
 	var shovels []models.Shovel
 	query := database.DB
 	if organizationID != nil {
 		query = query.Where("organization_id = ?", *organizationID)
 	}
+
+	if serialNumber != nil {
+		query = query.Where("serial_number = ?", *serialNumber)
+	}
+
 	result := query.Find(&shovels)
 	return shovels, result.Error
 }
