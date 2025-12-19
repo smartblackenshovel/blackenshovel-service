@@ -5,8 +5,8 @@ services:
     image: postgres:15
     container_name: blackenshovel-db
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: 
+      POSTGRES_PASSWORD: 
       POSTGRES_DB: blackenshovel
     ports:
       - "5433:5432"
